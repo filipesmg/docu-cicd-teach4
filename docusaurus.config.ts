@@ -5,8 +5,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'TEACH 4',
-  tagline: 'Crafting documentation with Docusaurus, GitHub Pages, and CI/CD',
+  title: 'My Website',
+  tagline: 'My awesome website built with Docusaurus',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -17,7 +17,7 @@ const config: Config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'ivzhukov', // Usually your GitHub org/user name.
+  organizationName: 'filipesmg', // Usually your GitHub org/user name.
   projectName: 'docu-cicd-teach4', // Usually your repo name.
 
   onBrokenLinks: 'throw',
