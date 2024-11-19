@@ -4,10 +4,8 @@ sidebar_position: 2
 
 # Deploy my first website on GitHub
 
-Login with your GitHub account and open the following repository 
-```
-https://github.com/ivzhukov/docu-cicd-teach4
-```
+Login with you GitHub account and open the following repository 
+<a href="https://github.com/ivzhukov/docu-cicd-teach4" target="_blank">https://github.com/ivzhukov/docu-cicd-teach4</a>
 then make a fork of it.
 
 :::info
@@ -19,17 +17,16 @@ When you fork a repository on GitHub, it creates an independent copy of the orig
 
 After successful forking you should see in the top left corner your login name and below a line where it was forked from, e.g. like on the picture `forked from ivzhukov/docu-cicd-teach4`.
 
-When you fork a repository, GitHub disables Actions (automated workflows like tests or deployments) by default for safety. To use them, we need to enable Actions for the forked repository as shown in the picture. Before doing this, it's a good idea to review the workflows to ensure they are safe and won't cause issues when they run.
-
 ![Deploy](./img/gh_deploy_003.png)
-![Deploy](./img/gh_deploy_004.png)
+
+When you fork a repository, GitHub disables Actions (automated workflows like tests or deployments) by default for safety. To use them, we need to enable Actions for the forked repository as shown in the picture. Before doing this, it's a good idea to review the workflows to ensure they are safe and won't cause issues when they run.
 
 <details>
   <summary>Open me for more details!</summary>
 
 GitHub Actions are defined in the `.github/workflows` directory of a repository. If you open the `pages.yaml` file within that directory, you will find the full description of the workflow. This file contains the steps and configuration details for automating tasks. Each step in the file outlines specific actions to be performed, such as setting up dependencies, building the site, and deploying it.
 
-  ```yaml
+```yaml
 name: Deploy static page
 
 on:
@@ -48,39 +45,55 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
+# Define a job
 jobs:
   deploy:
+    # Specifies the environment where the deployment happens.
+    # It is useful for managing deployment environments
+    # like staging, production, or custom ones.
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
+    
+    # Specify the runner environment
     runs-on: ubuntu-latest
 
+    # Execute sequence of the following steps    
     steps:
+      # Checkout a Git repository at a particular version
       - name: Checkout
         uses: actions/checkout@v4
-      # Build steps
+      # Setup a Node.js environment by adding problem matchers 
+      # and optionally downloading and adding it to the PATH
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
           cache: yarn
+      # Install dependencies listed in the package.json file
+      # of the project. Creates a node_modules directory where 
+      # the installed packages are stored.
+      # Updates the yarn.lock file if needed, unless otherwise specified.
       - name: Install dependencies
         run: yarn install --frozen-lockfile --non-interactive
+      # Compile or package a project for production
       - name: Build
         run: yarn build
-      # Build steps
+      # Enable Pages, extract various metadata about a site, 
+      # and configure some supported static site generators
       - name: Setup Pages
         uses: actions/configure-pages@v5.0.0
+      # Prepare your static assets to be deployed to GitHub Pages
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3.0.1
         with:
           # Specify build output path
           path: build
+      # Deploy an artifact as a GitHub Pages site    
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4.0.5
-  ```
+```
 The provided GitHub Actions script automates deploying a static site to GitHub Pages whenever there is a push to the `main` branch.
 
 First, it sets permissions for the GitHub token to read the repository content and write to GitHub Pages. It uses concurrency control to ensure only one deployment runs at a time, canceling any ongoing ones if a new push is detected.
@@ -89,7 +102,11 @@ The main deployment job checks out the code, sets up `Node.js` (It allows to run
 
 This setup allows automatic building and publishing of the static site whenever updates are pushed to main.
 
+If you want to learn more about GitHub Actions click [here](https://docs.github.com/en/actions).
+
 </details>
+
+![Deploy](./img/gh_deploy_004.png)
 
 Enable GitHub Actions (like the `pages.yaml` file).
 ![Deploy](./img/gh_deploy_005.png)
@@ -127,7 +144,7 @@ Provide meaningful commit message and click on `Commit`.
 ![Deploy](./img/gh_deploy_011.png)
 
 :::info
-A commit in Git saves changes to your project, creating a snapshot of your files. A commit message describes what changes have been made. A strong message is important because it helps others understand the purpose of the changes, making it easier to track the project's history and collaborate effectively.
+A commit in Git saves changes to your project, creating a snapshot of your files. A commit message describes what changes have been made. A meaningful and clear message is important because it helps others understand the purpose of the changes, making it easier to track the project's history and collaborate effectively.
 :::
 
 This commit will trigger the action defined in the `pages.yaml` file. You can watch the process and debug it if needed by going to the `Actions` tab in GitHub. From there, you can click on a specific workflow run to see the details and check if everything is working as expected.
@@ -135,7 +152,7 @@ This commit will trigger the action defined in the `pages.yaml` file. You can wa
 For example here you can see that one workflow is running.
 ![Deploy](./img/gh_deploy_012.png)
 
-If you click on specific workflow you will additional on which step is the current workflow.
+If you click on specific workflow you will get additional information on which step is the current workflow.
 ![Deploy](./img/gh_deploy_013.png)
 
 You can even see a breakdown of each step and see warnings and errors. This is very useful to identify the problem if you get stuck at one of the workflow steps.
@@ -144,7 +161,7 @@ You can even see a breakdown of each step and see warnings and errors. This is v
 If everything went well during our deployment, you should see a green tick. This indicates that the process has been completed successfully.
 ![Deploy](./img/gh_deploy_015.png)
 
-If the workflow completes without any errors, you can visit the link mentioned earlier to view the freshly generated website. It should look like this!
+If the workflow completes without any errors, you can visit the link listed below the deploy action (or in the "about" section of the repo, which you updated before). It should look like this!
 ![Deploy](./img/gh_deploy_016.png)
 
 Congratulations! You have successfully deployed your first Docusaurus website on GitHub Pages.
